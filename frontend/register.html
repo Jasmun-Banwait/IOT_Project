@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Seat Occupancy System - Register</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: linear-gradient(120deg, #007bff, #6c63ff);
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin: 0;
+    }
+
+    .register-container {
+      background: white;
+      padding: 2rem;
+      border-radius: 12px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+      width: 320px;
+      text-align: center;
+    }
+
+    h2 {
+      margin-bottom: 1.5rem;
+      color: #333;
+    }
+
+    input {
+      width: 100%;
+      padding: 10px;
+      margin: 8px 0;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+      font-size: 1rem;
+    }
+
+    button {
+      background-color: #007bff;
+      color: white;
+      border: none;
+      padding: 10px;
+      width: 100%;
+      border-radius: 6px;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    button:hover {
+      background-color: #0056b3;
+    }
+
+    .footer {
+      margin-top: 1rem;
+      font-size: 0.9rem;
+      color: #666;
+    }
+
+    .footer a {
+      color: #007bff;
+      text-decoration: none;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="register-container">
+    <h2>Create Account</h2>
+    <form id="registerForm">
+      <input type="text" id="fullname" placeholder="Full Name" required /><br />
+      <input type="email" id="email" placeholder="Email" required /><br />
+      <input type="password" id="password" placeholder="Password" required /><br />
+      <input type="password" id="confirmPassword" placeholder="Confirm Password" required /><br />
+      <button type="submit">Register</button>
+    </form>
+    <div class="footer">
+      <p>Already have an account? <a href="index.html">Login</a></p>
+    </div>
+  </div>
+
+  <script>
+    document.getElementById("registerForm").addEventListener("submit", async (e) => {
+  e.preventDefault();
+
+  const fullname = document.getElementById("fullname").value.trim();
+  const email = document.getElementById("email").value.trim();
+  const password = document.getElementById("password").value;
+  const confirmPassword = document.getElementById("confirmPassword").value;
+
+  if (password !== confirmPassword) {
+    alert("Passwords do not match!");
+    return;
+  }
+
+  try {
+    const response = await fetch("http://159.203.57.89:3000/api/auth/register", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ fullname, email, password }),
+    });
+
+    const result = await response.json();
+
+    if (response.ok) {
+      alert("✅ Registration successful!");
+      window.location.href = "index.html";
+    } else {
+      alert("❌ " + result.message);
+    }
+  } catch (err) {
+    alert("⚠️ Server not reachable.");
+    console.error(err);
+  }
+});
+
+  </script>
+</body>
+</html>

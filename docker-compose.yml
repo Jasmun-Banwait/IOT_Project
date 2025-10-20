@@ -1,0 +1,40 @@
+version: "3.9"
+
+services:
+  db:
+    image: postgres:16
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: seatdb
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    restart: always
+
+  backend:
+    build: ./backend
+    environment:
+      - PGUSER=user
+      - PGPASSWORD=password
+      - PGDATABASE=seatdb
+      - PGHOST=db
+      - PGPORT=5432
+      - PORT=3000
+    ports:
+      - "3000:3000"
+    depends_on:
+      - db
+    restart: always
+
+  frontend:
+    build: ./frontend
+    ports:
+      - "8080:80"
+    depends_on:
+      - backend
+    restart: always
+
+volumes:
+  postgres_data:
