@@ -1,13 +1,8 @@
-# Seat Occupancy System
+# ECE1528 Project
 
-This project is a cloud-based IoT system for seat reservation and monitoring.
-Includes:
-- Frontend (login + dashboard)
-- Backend (FastAPI-based API)
-- Database (PostgreSQL)
-- IoT ESP32 firmware (MQTT communication)
+## Local Droplet README
+(your original content here)
 
-## Run locally
-```bash
-docker compose up -d
-```
+## GitHub README
+(some initial GitHub info or placeholder)
+
