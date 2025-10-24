@@ -72,15 +72,35 @@
     </div>
   </div>
 
-  <script>
-    document.getElementById("loginForm").addEventListener("submit", async (e) => {
-      e.preventDefault();
-      const email = document.getElementById("email").value;
-      const password = document.getElementById("password").value;
-      console.log("Login attempt:", email, password);
-      // Later, this will send POST to /api/auth/login
-      alert("Login submitted (API not yet connected).");
-    });
-  </script>
+<script>
+  document.getElementById("loginForm").addEventListener("submit", async (e) => {
+    e.preventDefault();
+
+    const email = document.getElementById("email").value.trim();
+    const password = document.getElementById("password").value.trim();
+
+    try {
+      const response = await fetch("http://159.203.57.89:3000/api/auth/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password }),
+      });
+
+      const result = await response.json();
+
+      if (response.ok) {
+        alert("✅ Login successful!");
+        // Redirect to dashboard
+        window.location.href = "dashboard.html";
+      } else {
+        alert("❌ " + result.message);
+      }
+    } catch (err) {
+      console.error("Login error:", err);
+      alert("⚠️ Unable to reach the server.");
+    }
+  });
+</script>
+
 </body>
 </html>
