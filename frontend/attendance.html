@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Seat Attendance</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f6f8;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+    .card {
+      background-color: #ffffff;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      padding: 2rem;
+      text-align: center;
+      width: 350px;
+    }
+    h1 { color: #2b4eff; font-size: 1.4rem; margin-bottom: 1rem; }
+    p  { margin: 0.5rem 0; font-size: 0.95rem; }
+    .success { color: #198754; font-weight: bold; }
+    .error   { color: #dc3545; font-weight: bold; }
+    button {
+      background-color: #2b4eff; color: #ffffff;
+      border: none; border-radius: 6px;
+      padding: 0.6rem 1.2rem; cursor: pointer;
+      margin-top: 1rem; font-size: 0.9rem;
+    }
+    button:hover { background-color: #1f37b8; }
+    input {
+      width: 90%; margin: 0.4rem 0; padding: 0.5rem;
+      border: 1px solid #ccc; border-radius: 4px;
+    }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h1>Attendance Check-In</h1>
+    <p id="status">Enter your email and password to confirm attendance.</p>
+
+    <form id="loginForm">
+      <input type="email" id="email" placeholder="Email" required><br>
+      <input type="password" id="password" placeholder="Password" required><br>
+      <button type="submit">Submit</button>
+    </form>
+
+    <p id="result"></p>
+  </div>
+
+  <script>
+    const params = new URLSearchParams(window.location.search);
+    const seatId = params.get("seat");
+    const form = document.getElementById("loginForm");
+    const resultEl = document.getElementById("result");
+
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      resultEl.textContent = "Submitting...";
+      resultEl.className = "";
+
+      const email = document.getElementById("email").value.trim();
+      const password = document.getElementById("password").value.trim();
+
+      try {
+        const res = await fetch("/api/auth/login", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email, password, seat_id: seatId }),
+        });
+
+        const data = await res.json();
+
+        if (res.ok) {
+          resultEl.className = "success";
+          if (seatId) {
+            resultEl.innerHTML =
+              `Attendance recorded for seat ${seatId}.<br>Login successful.`;
+          } else {
+            resultEl.textContent = "Login successful.";
+          }
+          // Optional redirect after a few seconds:
+          // setTimeout(() => (window.location.href = "/dashboard.html"), 2000);
+        } else {
+          resultEl.className = "error";
+          resultEl.textContent = data.message || "Login failed.";
+        }
+      } catch (err) {
+        console.error(err);
+        resultEl.className = "error";
+        resultEl.textContent = "Server connection error.";
+      }
+    });
+  </script>
+</body>
+</html>
